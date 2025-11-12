@@ -4,6 +4,7 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
+import { useMood } from "../Contexts/MoodContext";
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from "@expo-google-fonts/poppins";
 
 
@@ -86,7 +87,18 @@ export default function HomeScreen({navigation}: HomeScreenProps ) {
         Poppins_600SemiBold
     })
     
-    const [emoji, setEmoji] = useState<'happy' | 'neutral' | 'sad' | null>(null)
+    const { moods, setMoodForDate } = useMood()
+
+    const arrToday = new Date().toISOString().split("T") /*toISOString converte la stringa in formato ISO data-orario. Split divide array in due parti dove prenderemo solo la prima [0] */
+    const today = arrToday[0]
+
+    /*Singolo mood per gestire il colore */
+    const mood = moods[today];
+
+    function handleEmoji(mood: 'happy' | 'neutral' | 'sad'){
+        setMoodForDate(today, mood)
+        navigation.navigate("Notes")
+    }
 
     if (!isFontsLoaded) return null;
 
@@ -117,19 +129,19 @@ export default function HomeScreen({navigation}: HomeScreenProps ) {
 
                     <View style={styles.containerEmojiHome}>
 
-                        <TouchableOpacity onPress={() => setEmoji('happy')}>
+                        <TouchableOpacity onPress={() => handleEmoji('happy')}>
 
-                            <FontAwesome5 name="smile" size={70} color={emoji === "happy" ? "green" : "gray"} />
+                            <FontAwesome5 name="smile" size={70} color={mood === "happy" ? "green" : "gray"} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => setEmoji('neutral')}>
+                        <TouchableOpacity onPress={() => handleEmoji('neutral')}>
 
-                            <FontAwesome5 name="meh" size={70} color={emoji === "neutral" ? "yellow" : "gray"} />
+                            <FontAwesome5 name="meh" size={70} color={mood === "neutral" ? "yellow" : "gray"} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => setEmoji('sad')}>
+                        <TouchableOpacity onPress={() => handleEmoji('sad')}>
 
-                            <FontAwesome5 name="frown" size={70} color={emoji === "sad" ? "red" : "gray"} />
+                            <FontAwesome5 name="frown" size={70} color={mood === "sad" ? "red" : "gray"} />
                         </TouchableOpacity>
 
 
