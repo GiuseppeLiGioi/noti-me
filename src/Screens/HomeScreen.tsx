@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import {ListaSchermiTab} from "../types"
+import { ListaSchermiTab } from "../types";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -85,10 +85,10 @@ export default function HomeScreen({navigation}: HomeScreenProps ) {
         Poppins_400Regular,
         Poppins_600SemiBold
     })
+    
+    const [emoji, setEmoji] = useState<'happy' | 'neutral' | 'sad' | null>(null)
 
     if (!isFontsLoaded) return null;
-
-    const [emoji, setEmoji] = useState<'happy' | 'neutral' | 'sad' | null>(null)
 
     return (
 
