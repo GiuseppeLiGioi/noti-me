@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useMood } from "../Contexts/MoodContext";
 import { Calendar } from "react-native-calendars";
 import { useState, useEffect } from "react";
@@ -48,36 +48,40 @@ export default function NotesScreen() {
 
     const { moods, notes, setNoteForDate, setMoodForDate } = useMood()
     const [text, setText] = useState<string>("")
-    const [selectedDate, setSelectedDate] = useState<string | null>()
-    const [markedDates, setMarkedDates] = useState<MarkedDatesType>()
+    const [selectedDate, setSelectedDate] = useState<string | null>() /*Data selezionata dall'utente */
+    const [markedDates, setMarkedDates] = useState<MarkedDatesType>() /*Date che possiedono un emoji / mood e quindi marcate */
 
-    type MarkedDatesType = { [date: string]: { marked?: boolean, dotColor?: string, selected?: boolean, selectedColor?: string } }
+    type MarkedDatesType = { [date: string]: { emoji?: string, selected?: boolean, selectedColor?: string } }
 
     const today = new Date().toISOString().split("T")[0];
 
     useEffect(() => {
         const newMarks: MarkedDatesType = {}
 
-        for (const chiaveDate in moods) {
+        for (const chiaveDate in moods) {  /*Ripasso ciclo for...in per iterare sulle chiavi degli oggetti */
             const mood = moods[chiaveDate]
-            let dotColor = "gray"
+            let emoji = ""
 
             if (mood === "happy") {
-                dotColor = "green"
+                emoji = "😊"
             }
             else if (mood === "neutral") {
-                dotColor = "yellow"
+                emoji = "😐"
             }
             else if (mood === "sad") {
-                dotColor = "red"
+                emoji = "😢"
             }
 
-            newMarks[chiaveDate] = { marked: true, dotColor, selected: false, selectedColor: "transparent" }
+            newMarks[chiaveDate] = { emoji, selected: chiaveDate === selectedDate }; /*Popoliamo l'oggetto */
         }
 
-        setMarkedDates(newMarks)
+        if (selectedDate && !newMarks[selectedDate]) {
+            newMarks[selectedDate] = { selected: true }; /*Anche se non hanno emoji posso reintrare nelle marcate selezionandole*/
+        }
 
-    }, [moods])
+        setMarkedDates(newMarks) /*Aggiorniamo lo stato */
+
+    }, [moods, selectedDate])
 
 
 
@@ -86,7 +90,7 @@ export default function NotesScreen() {
 
             <View style={stylesScreen.containerCalendar}>
 
-                <Calendar
+                <Calendar /*Calendar da  react-native-calendars*/
                     style={stylesScreen.calendar}
                     markedDates={markedDates}
                     onDayPress={(day) => {
@@ -94,18 +98,51 @@ export default function NotesScreen() {
                         setText(notes[day.dateString] || "")
                     }}
                     theme={{
-                        backgroundColor: '#0b0f2a',       
-                        calendarBackground: '#0b0f2a',   
-                        textSectionTitleColor: 'white',   
-                        dayTextColor: 'white',            
-                        todayTextColor: '#00ffff',       
-                        selectedDayBackgroundColor: '#ff00ff', 
-                        monthTextColor: 'white',          
-                        arrowColor: 'white',              
-                        dotColor: '#ff00ff',              
+                        backgroundColor: '#0b0f2a',
+                        calendarBackground: '#0b0f2a',
+                        textSectionTitleColor: 'white',
+                        dayTextColor: 'white',
+                        todayTextColor: '#00ffff',
+                        selectedDayBackgroundColor: '#ff00ff',
+                        monthTextColor: 'white',
+                        arrowColor: 'white',
+                        dotColor: '#ff00ff',
                         selectedDotColor: 'white',
-                        textDisabledColor: '#555',        
+                        textDisabledColor: '#555',
                     }}
+
+                    dayComponent={(dayProperties) => { /*dayComponent possiete dayProperties.date e dayProperties.state*/
+                        if (!dayProperties.date) return null;
+
+
+                        const markForThisDay = markedDates?.[dayProperties.date.dateString];
+                        const isToday = dayProperties.date.dateString === today; /*per capire se la data selezionata è quella di oggi, per modificare lo stile */
+
+                        return (
+                            <TouchableOpacity style={{
+                                width: 40,
+                                height: 40,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                backgroundColor: "transparent",
+                                borderRadius: 20,
+                            }}
+                            onPress={() => {
+                                setSelectedDate(dayProperties.date?.dateString)
+                                setText(notes[dayProperties.date?.dateString || ""])
+                            }}
+                            >
+                                <Text style={{ color: dayProperties.state === "disabled" ? "#555" : isToday ? "#00ffff" : markForThisDay?.selected ? "#ff80dfff" : "white", fontSize: 14 }}>
+                                    {dayProperties.date.day}
+                                </Text>
+                                <Text style={{ fontSize: 20 }}>
+                                    {markForThisDay?.emoji || "❓"}
+                                </Text>
+                            </TouchableOpacity>
+                        )
+                    }
+                    }
+
 
                 />
 
