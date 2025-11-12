@@ -19,7 +19,7 @@ import { Text } from "react-native";
 
     const MoodContext = createContext<MoodContextType | undefined>(undefined)
 
-    export function moodProvider({children} : {children: ReactNode}){ /* ReactNode = qualsiasi cosa renderizzabile da react, qualsiasi elemento renderizzabile. */
+    export function MoodProvider({children} : {children: ReactNode}){ /* ReactNode = qualsiasi cosa renderizzabile da react, qualsiasi elemento renderizzabile. */
       const [moods, setMoods] = useState<DailyMood>({});
       const [notes, setNotes] = useState<DailyNote>({});
 

@@ -1,9 +1,11 @@
 
-import { StyleSheet, Text, View } from 'react-native';
 import AppNavigator from './src/Navigation/AppNavigator';
+import {MoodProvider} from "./src/Contexts/MoodContext"
 export default function App() {
 
 
 return (
-<AppNavigator />
+    <MoodProvider>
+      <AppNavigator />
+    </MoodProvider>
 )};
