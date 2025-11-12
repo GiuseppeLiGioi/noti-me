@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { useMood } from "../Contexts/MoodContext";
 import { Calendar } from "react-native-calendars";
 import { useState, useEffect } from "react";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function NotesScreen(){
 
@@ -19,13 +20,25 @@ export default function NotesScreen(){
      padding: 10
     
     },
+
     calendar: {
     borderRadius: 20,
     
     },
 
     textCalendar: {
-        color: "white"
+        color: "white",
+        marginTop: 20,
+        fontFamily: "Poppins_400Regular",
+        textAlign: "center",
+        fontSize: 16
+    },
+
+    gradientLine: {
+    width: "70%",
+    height: 4,
+    textAlign: "center",      
+    borderRadius: 2,
     }
 
 
@@ -81,7 +94,17 @@ export default function NotesScreen(){
             
             />
 
+            <View style={{alignItems: "center"}}>
             <Text style={stylesScreen.textCalendar}>Data Selezionata : {selectedDate}</Text>
+            <LinearGradient  colors={['#ff00ff', '#00ffff']}
+             start={{x: 0, y: 0}}
+             end={{x: 1, y: 0}}
+             style={stylesScreen.gradientLine}>
+                
+             </LinearGradient>
+
+            </View>
+
             </View>
 
 
