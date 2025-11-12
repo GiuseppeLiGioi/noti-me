@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+
 import HomeScreen from "../Screens/HomeScreen";
 import SettingsScreen from "../Screens/SettingsScreen";
 import NotesScreen from "../Screens/NotesScreen";

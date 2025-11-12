@@ -1,13 +1,17 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {ListaSchermiTab} from "../types"
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
+import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from "@expo-google-fonts/poppins";
 
 
-export default function HomeScreen() {
+type HomeScreenProps = {
+    navigation: BottomTabNavigationProp <ListaSchermiTab, 'Home'>
+}
 
-    
-
+export default function HomeScreen({navigation}: HomeScreenProps ) {
 
     const styles = StyleSheet.create({
         container: {
@@ -17,102 +21,128 @@ export default function HomeScreen() {
             gap: "10",
             padding: 20,
             maxWidth: "100%",
-            
-            
+            backgroundColor: "#0b0f2a"
+
+
         },
 
         title: {
-            fontSize: 20,
+            fontSize: 24,
             color: "white",
-            textAlign: "center"
+            textAlign: "center",
+            fontFamily: "Poppins_600SemiBold"
         },
         semiTitle: {
-            fontSize: 14,
+            fontSize: 18,
             color: "white",
-            textAlign: "center"
-        },
-        button: {
-            borderColor: "green",
-            borderWidth: 1,
-            padding: 10,
-            backgroundColor: "white",
-            borderRadius: 10,
             textAlign: "center",
-            marginTop: 20,
-            maxWidth: "70%"
+            fontFamily: "Poppins_400Regular"
+        },
+        buttonHome: {
+            borderColor: "transparent",
+            borderWidth: 3,
+            padding: 12,
+            backgroundColor: "#140b22ff",
+            borderRadius: 18,
+            textAlign: "center",
+            maxWidth: "70%",
+                
         },
 
-        buttonTextTopHome:{
-            color: "blue"
+        buttonTextTopHome: {
+            color: "white",
+            fontFamily: "Poppins_400Regular"
         },
 
-        containerEmojiHome:{
+        containerEmojiHome: {
             flexDirection: "row",
-            gap: 40,
-
+            gap: 30
         },
 
         containerBottomHome: {
             justifyContent: "center",
-            alignContent: "center",
+            alignItems: "center",
             gap: 20,
             padding: 40,
-            borderRadius: 15,
-            backgroundColor: "black",
+            borderRadius: 20,
+            backgroundColor: '#140b22ff',
             textAlign: "center",
-            borderWidth: 1,
-            marginTop: 30,
-
-            borderColor: "rgba(239, 251, 213, 1)"
+            borderWidth: 3,
+            borderColor: "transparent",
+            shadowColor: '#ff00ff',
         },
 
-        emojiText : {
+        emojiText: {
             textAlign: "center",
             fontSize: 24,
-            color: "white"
+            color: "white",
+            fontFamily: "Poppins_400Regular"
         }
-
-
-
     })
-    
-    const [emoji, setEmoji] = useState <'happy' | 'neutral' | 'sad' | null> (null)
+
+
+    const [isFontsLoaded] = useFonts({
+        Poppins_400Regular,
+        Poppins_600SemiBold
+    })
+
+    if (!isFontsLoaded) return null;
+
+    const [emoji, setEmoji] = useState<'happy' | 'neutral' | 'sad' | null>(null)
 
     return (
 
-        <LinearGradient
-            colors={['#0D0D0D','#0A0A23', '#10104B', '#1A1A73']}
-            start={[0, 0]}
-            end={[0, 1]}
-            style={styles.container}>
+         <View style={styles.container}>
 
             <Text style={styles.title}>Benvenuto su NotiMe!</Text>
             <Text style={styles.semiTitle}>Il mio primo piccolo progetto in React Native + TypeScript.</Text>
-            <TouchableOpacity style={styles.button}><Text style={styles.buttonTextTopHome}>Vai alle note!</Text></TouchableOpacity>
+            <LinearGradient
+             colors={['#ff00ff', '#00ffff']}
+             start={{x: 0, y: 0}}
+             end={{x: 1, y: 1}}
+             style={{borderRadius: 18, padding: 2, marginTop: 30}}
+            >
 
-            <View style={styles.containerBottomHome}>
-                <Text style={styles.emojiText}>Come ti senti oggi!?</Text>
+            <TouchableOpacity style={styles.buttonHome} onPress={() => navigation.navigate("Notes")}><Text style={styles.buttonTextTopHome}>Vai alle note!</Text></TouchableOpacity>
+            </LinearGradient>
 
-                <View style={styles.containerEmojiHome}>
-                    <TouchableOpacity  onPress={() => setEmoji('happy')}>
+            <LinearGradient
+                colors={['#ff00ff', '#00ffff']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{ borderRadius: 20, padding: 2,  marginTop: 30 }}
+            >
+                <View style={styles.containerBottomHome}>
+                    <Text style={styles.emojiText}>Come ti senti oggi!?</Text>
 
-                    <FontAwesome5 name = "smile" size={70} color={emoji === "happy" ? "green" : "gray"}/>
-                    </TouchableOpacity>
+                    <View style={styles.containerEmojiHome}>
 
-                    <TouchableOpacity onPress={() => setEmoji('neutral')}>
+                        <TouchableOpacity onPress={() => setEmoji('happy')}>
 
-                    <FontAwesome5 name = "meh" size={70} color={emoji === "neutral" ? "yellow" : "gray"}/>
-                    </TouchableOpacity>
+                            <FontAwesome5 name="smile" size={70} color={emoji === "happy" ? "green" : "gray"} />
+                        </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => setEmoji('sad')}>
+                        <TouchableOpacity onPress={() => setEmoji('neutral')}>
 
-                    <FontAwesome5 name = "frown" size={70} color={emoji === "sad" ? "red" : "gray"}/>
-                    </TouchableOpacity>
+                            <FontAwesome5 name="meh" size={70} color={emoji === "neutral" ? "yellow" : "gray"} />
+                        </TouchableOpacity>
 
+                        <TouchableOpacity onPress={() => setEmoji('sad')}>
+
+                            <FontAwesome5 name="frown" size={70} color={emoji === "sad" ? "red" : "gray"} />
+                        </TouchableOpacity>
+
+
+                    </View>
 
                 </View>
-            </View>
-        </LinearGradient>
+            </LinearGradient>
+         </View>
+
+
+
+
+       
 
     )
 
